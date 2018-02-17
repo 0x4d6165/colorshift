@@ -3,7 +3,33 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <regex.h>
+
+double getMaxColor(double r, double g, double b) {
+  double max = 0;
+  if(r>max) {
+    max = r;
+  }
+  if(g>max) {
+    max = g;
+  }
+  if(b>max) {
+    max = b;
+  }
+  return max;
+}
+double getMinColor(double r, double g, double b) {
+  double min = 255;
+  if(r<min) {
+    min = r;
+  }
+  if(g<max) {
+    min = g;
+  }
+  if(b<min) {
+    max = b;
+  }
+  return min;
+}
 
 int main (int argc, char **argv) {
   char intermBuf[BUFSIZ];
@@ -38,39 +64,14 @@ int main (int argc, char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  // Use regex to see if the user input is a valid 6 digit hex number
-  regex_t hexRegex;
-  int regexOutput;
-  char regexBuf[100];
-  // Compile regex
-  regexOutput = regcomp(&hexRegex, "[A-Fa-f0-9]", 0);
-  if(regexOutput) {
-    fprintf(stderr, "Could not compile regex\n");
-    exit(EXIT_FAILURE);
+  // Check to see if the input is a valid hex color
+  if(inputString[strspn(inputString, "0123456789abcdefABCDEF")] != 0) {
+      fprintf(stderr, "Invalid hex color\n");
+      exit(EXIT_FAILURE);
   }
-  // Execute regex
-  regexOutput = regexec(&hexRegex, inputString, (size_t) 0, NULL, 0);
-  if(!regexOutput) {
-    printf("Match\n");
-    inputInt = strtol(inputString, NULL, 16);
-    printf("%i\n", (int)inputInt);
-  }
-  else if(regexOutput == REG_NOMATCH) {
-    fprintf(stderr, "Invalid hex color\n");
-    exit(EXIT_FAILURE);
-  }
-  else {
-    regerror(regexOutput, &hexRegex, regexBuf, sizeof(regexBuf));
-    fprintf(stderr, "Regex match failed: %s\n", regexBuf);
-    exit(EXIT_FAILURE);
-  }
-  regfree(&hexRegex);
 
-  // This should've been caught by now but let's just be safe.
-  if(sizeof(inputInt) != 8) {
-    fprintf(stderr, "Invalid hex color\n");
-    exit(EXIT_FAILURE);
-  }
+  inputInt = strtol(inputString, NULL, 16);
+  printf("%i\n", (int)inputInt);
 
   // Let's split our hex code into their respective r, g, and b values
   r = (double) ((inputInt >> 16) & 0xff);
@@ -79,6 +80,16 @@ int main (int argc, char **argv) {
   printf("Green: %f\n", g);
   b = (double) (inputInt & 0xff);
   printf("Blue: %f\n", b);
+
+  // Now, let's convert our rgb values into HSL (thanks to dystopiancode.blogspot.com for the algorithm)
+  double h = 0.0;
+  double s = 0.0;
+  double l = 0.0;
+  double c = 0.0;
+
+  double M = getMaxColor(r,g,b);
+  double m = getMinColor(r,g,b);t
+
 
   return(EXIT_SUCCESS);
 }
