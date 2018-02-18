@@ -1,4 +1,4 @@
-FLAGS   = -std=c99 -Wall -lpcre
+FLAGS   = -std=c99 -Wall
 SOURCES = colorshift.c
 OBJECTS = colorshift.o
 EXEBIN  = colorshift
