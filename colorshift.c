@@ -55,8 +55,6 @@ int main (int argc, char **argv) {
       exit(EXIT_FAILURE);
     }
   }
-  free(lvalue);
-  free(dvalue);
 
   char intermBuf[BUFSIZ];
   char inputString[7];
@@ -83,11 +81,6 @@ int main (int argc, char **argv) {
       exit(EXIT_FAILURE);
     }
     strncpy(inputString, argv[optind], 6);
-  }
-  // User did not provide input
-  else {
-    fprintf(stderr, "Usage: %s hex-color", argv[0]);
-    exit(EXIT_FAILURE);
   }
 
   // Check to see if the input is a valid hex color
@@ -194,7 +187,7 @@ int main (int argc, char **argv) {
   int roundedR = round(r);
   int roundedG = round(g);
   int roundedB = round(b);
-  printf("%X%X%X\n", roundedR, roundedG, roundedB);
+  printf("%02X%02X%02X\n", roundedR, roundedG, roundedB);
 
   return(EXIT_SUCCESS);
 }
